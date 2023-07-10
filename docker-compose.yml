@@ -1,0 +1,87 @@
+version: '3.8'
+services:
+  emqx-enterprise:
+    image: emqx/emqx-enterprise:5.0.4
+    container_name: emqx
+    healthcheck:
+      test: [ "CMD", "emqx", "ping" ]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+    ports:
+      - 1883:1883
+      - 18083:18083
+    volumes:
+      - $PWD/emqx/cluster.hocon:/opt/emqx/data/configs/cluster.hocon
+    depends_on:
+      influxdb:
+        condition: service_started
+
+  influxdb:
+    image: influxdb:2.7.1
+    container_name: influxdb
+    ports:
+      - 8086:8086
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=EMQX_Demo_1234
+      - DOCKER_INFLUXDB_INIT_ORG=emqx
+      - DOCKER_INFLUXDB_INIT_BUCKET=iot_data
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=DD85150B-3871-4622-8D14-45BFE743C270
+
+  mqttx-simulate:
+    image: emqx/mqttx-cli:v1.9.3
+    container_name: mqttx-simulate
+    volumes:
+      - $PWD/mqttx/energy-storage.js:/app/mqttx-simulate/energy-storage.js
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mqttx simulate --file /app/mqttx-simulate/energy-storage.js -c 10 -h emqx-enterprise -im 50
+    depends_on:
+      emqx-enterprise:
+        condition: service_healthy
+
+  mqttx:
+    image: emqx/mqttx-cli:v1.9.3
+    container_name: mqttx
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mqttx sub -t 'mqttx/simulate/#' -v -h emqx-enterprise
+    depends_on:
+      emqx-enterprise:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - $PWD/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:9.3.2
+    container_name: grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=public
+    volumes:
+      # - $PWD/emqx-exporter/config/grafana-template/EMQX5-enterprise:/grafana-dashboard-emqx5-ee
+      # - $PWD/grafana-dashboards:/grafana-dashboard-IEM
+      # - $PWD/grafana-provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - $PWD/grafana-provisioning/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+    depends_on:
+      emqx-enterprise:
+        condition: service_healthy
+      influxdb:
+        condition: service_started
+
+networks:
+  emqx-net:
+    name: emqx-net

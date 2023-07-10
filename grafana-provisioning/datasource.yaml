@@ -1,0 +1,24 @@
+apiVersion: 1
+
+datasources:
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    orgId: 1
+    url: "http://prometheus:9090"
+    editable: true
+  - name: my-influxdb
+    type: influxdb
+    orgId: 1
+    url: "http://influxdb:8086"
+    editable: true
+    isDefault: true
+    jsonData:
+      httpMode: 'POST'
+    secureJsonData:
+      token: "DD85150B-3871-4622-8D14-45BFE743C270"
+    jsonData:
+      defaultBucket: "iot_data"
+      httpMode: "POST"
+      organization: "emqx"
+      version: "Flux"
