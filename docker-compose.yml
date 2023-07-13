@@ -39,7 +39,7 @@ services:
       - /bin/sh
       - -c
       - |
-        mqttx simulate --file /app/mqttx-simulate/energy-storage.js -c 10 -h emqx-enterprise -im 50
+        mqttx simulate --file /app/mqttx-simulate/energy-storage.js -c 5 -h emqx-enterprise -im 50
     depends_on:
       emqx-enterprise:
         condition: service_healthy
@@ -73,8 +73,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=public
     volumes:
       # - $PWD/emqx-exporter/config/grafana-template/EMQX5-enterprise:/grafana-dashboard-emqx5-ee
-      # - $PWD/grafana-dashboards:/grafana-dashboard-IEM
-      # - $PWD/grafana-provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - $PWD/grafana-dashboards:/grafana-dashboard-energy-storage
+      - $PWD/grafana-provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
       - $PWD/grafana-provisioning/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
     depends_on:
       emqx-enterprise:
