@@ -26,6 +26,8 @@ It provides monitoring and analysis of energy input/output, current power, as we
 
 ## Architecture
 
+![MQTT to InfluxDB Architecture](./image/mqtt-to-influxdb.jpg)
+
 | Name      | Version | Description                                                                      |
 | --------- | ------- | -------------------------------------------------------------------------------- |
 | [EMQX Enterprise](https://www.emqx.com/en/products/emqx)      | 5.0.3+  | MQTT broker used for message exchange between MQTT clients and the ClickHouse. |
