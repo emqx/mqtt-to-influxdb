@@ -18,6 +18,8 @@ EMQX and InfluxDB Complement Each Other in IoT Applications:
 
 By leveraging these capabilities, organizations can achieve real-time processing, efficient data ingestion, scalable storage, and comprehensive analytics for their IoT deployments.
 
+![EMQX Eneugy Store](./image/energy-store-overview.png)
+
 This demo showcases an IoT energy storage solution that involves data collection, real-time processing, monitoring, and management of the energy storage system using EMQX and InfluxDB. The solution enables data collection from the energy storage unit and transfer to EMQX with MQTT, then utilizes data integration processing and store the data in InfluxDB.
 
 It provides monitoring and analysis of energy input/output, current power, as well as battery status, performance, and health. Through alarm and event management, it detects and addresses anomalies in the energy storage system or batteries.
@@ -59,7 +61,7 @@ It provides monitoring and analysis of energy input/output, current power, as we
 
 3. You can open <http://localhost:8086> in your browser, and login with `admin`, `EMQX_Demo_1234` to view the data in InfluxDB.
 
-4. If you want to alalysis the data in Grafana, you can open <http://localhost:3000> in your browser, and login with `admin:public`, and add Query Panel to view the data in InfluxDB(Panel template is comming soon).
+4. If you want to view the energy storage data and EMQX Metrics in Grafana dashboard, you can open <http://localhost:3000> in your browser, and login with `admin:public`.
 
 ## License
 
